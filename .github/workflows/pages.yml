@@ -27,6 +27,15 @@ jobs:
           package = lzma.decompress(base64.b64decode(data))
           assert hashlib.sha256(package).hexdigest() == '6b91f8a1704cfacdfb27c8332cedecbb2dad425077ae010cc0b5fa9ab13c6795'
           zipfile.ZipFile(io.BytesIO(package)).extractall('site')
+          from pathlib import Path
+          p = Path('site/index.html')
+          s = p.read_text()
+          old = '<p class="note info">${tt(T(\'Family edition · one device · no online room\',\'نسخة العيلة · جهاز واحد · بدون غرفة أونلاين\'))}</p>'
+          new = '<p class="note info">${tt(T(\'46 activities on one device + online Ludo for 4 phones\',\'٤٦ نشاط على نفس الجهاز + لودو أونلاين لأربع موبايلات\'))}</p><a class="hub h-teal" href="https://our-time-family-online.onrender.com/" style="text-decoration:none"><span class="he">🌐</span><span class="ht"><b>${tt(T(\'Online Ludo · 4 phones\',\'لودو أونلاين · ٤ موبايلات\'))}</b><small>${tt(T(\'Create a room and invite 3 friends. Internet needed; first opening can take a minute.\',\'اعمل غرفة وابعت الدعوة لـ٣ أصحاب. محتاج إنترنت؛ أول فتح ممكن ياخد دقيقة.\'))}</small></span></a>'
+          assert s.count(old) == 1
+          p.write_text(s.replace(old, new))
+          p = Path('site/sw.js')
+          p.write_text(p.read_text().replace('our-time-family-v2.0.0', 'our-time-family-v2.1.0'))
           PYCODE
           test -f site/index.html
           test -f site/sw.js
