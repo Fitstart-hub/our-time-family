@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: our-time-family-online
+    runtime: node
+    plan: free
+    buildCommand: node online/unpack.cjs && cd online/app && npm ci --omit=dev
+    startCommand: cd online/app && npm start
+    healthCheckPath: /health
+    autoDeployTrigger: off
+    envVars:
+      - key: NODE_VERSION
+        value: 22.16.0
+      - key: ALLOWED_ORIGINS
+        value: https://fitstart-hub.github.io
